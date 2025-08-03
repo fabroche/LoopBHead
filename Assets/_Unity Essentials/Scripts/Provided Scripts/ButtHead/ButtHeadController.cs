@@ -10,17 +10,22 @@ public class ButtHeadController : MonoBehaviour
     [Header("Rotation")]
     public float rotationAngle = 120f; // Angle to rotate the player
 
+    [Header("Attack Settings")]
+    [SerializeField] private KeyCode attackKey = KeyCode.J;
+    [SerializeField] private string weaponTag = "Weapon";
 
     [Header("Animation")]
     public string floorTag = "Floor";
     public string idleAnimation = "isIdle";
     public string movementAnimation = "movement";
+    public string attackAnimation = "isAttacking";
 
     private Rigidbody2D rb;
     private Animator playerAnimator;
     private bool canMoveRight = true;
     private bool canMoveLeft = true;
     private bool isGrounded = true;
+    public bool haveWeapon = false;
 
     void Start()
     {
@@ -33,6 +38,7 @@ public class ButtHeadController : MonoBehaviour
 
     void Update()
     {
+        SetAttackAnimation(haveWeapon && Input.GetKey(attackKey));
 
         SetIdleAnimation(Input.GetAxisRaw("Horizontal") == 0);
 
@@ -89,6 +95,14 @@ public class ButtHeadController : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
+
+        if (collision.gameObject.CompareTag(weaponTag))
+        {
+            UnityEngine.Debug.Log($"Weapon collected {collision.gameObject}");
+            haveWeapon = true;
+            playerAnimator.SetBool("haveWeapon", true);    
+        }
+
         if (collision.gameObject.CompareTag(floorTag))
         {
             isGrounded = true;
@@ -107,6 +121,12 @@ public class ButtHeadController : MonoBehaviour
                 }
             }
         }
+    }
+
+    void SetEnableAttack(bool isAttackEnabled)
+    {
+            haveWeapon = isAttackEnabled;
+            playerAnimator.SetBool("haveWeapon", isAttackEnabled);
     }
 
     void OnCollisionExit2D(Collision2D collision)
@@ -160,6 +180,11 @@ public class ButtHeadController : MonoBehaviour
     {
         bool isFreeFalling = rb.linearVelocity.y < -0.5f;
         // playerAnimator.SetBool("FreeFall", isFreeFalling);
+    }
+
+    void SetAttackAnimation(bool isAttacking)
+    {
+        playerAnimator.SetBool(attackAnimation, isAttacking);
     }
 
     void SetJumpAnimation()

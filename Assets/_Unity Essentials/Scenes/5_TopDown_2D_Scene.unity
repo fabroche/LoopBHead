@@ -488,10 +488,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: Hammer_2D
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 7641535347853804417, guid: 12371e9aa639645428a25493cdce7088,
+        type: 3}
+      propertyPath: m_TagString
+      value: Weapon
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 3385042143139341508, guid: 12371e9aa639645428a25493cdce7088, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7641535347853804417, guid: 12371e9aa639645428a25493cdce7088,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1098140175}
   m_SourcePrefab: {fileID: 100100000, guid: 12371e9aa639645428a25493cdce7088, type: 3}
 --- !u!1001 &31508069
 PrefabInstance:
@@ -792,6 +802,39 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a41f59a0b49f68e4e92f6382c0e31a65, type: 3}
+--- !u!1 &109704653
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 109704654}
+  m_Layer: 0
+  m_Name: PatrolsPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &109704654
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 109704653}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 21.23, y: -1.03, z: -1.9}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 135233430}
+  - {fileID: 1074330662}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &130712514
 GameObject:
   m_ObjectHideFlags: 0
@@ -822,6 +865,37 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1536246530}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &135233429
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 135233430}
+  m_Layer: 0
+  m_Name: PointA
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &135233430
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 135233429}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 11.27, y: 3.01, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 109704654}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &241849989 stripped
 Transform:
@@ -969,7 +1043,7 @@ AudioSource:
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -1717,6 +1791,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1536246530}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1074330661
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1074330662}
+  m_Layer: 0
+  m_Name: PointB
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1074330662
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1074330661}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 19.54, y: 3.01, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 109704654}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1090509966
 GameObject:
   m_ObjectHideFlags: 0
@@ -1757,6 +1862,49 @@ Transform:
   - {fileID: 895841457}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1098140170 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7641535347853804417, guid: 12371e9aa639645428a25493cdce7088,
+    type: 3}
+  m_PrefabInstance: {fileID: 28817368}
+  m_PrefabAsset: {fileID: 0}
+--- !u!70 &1098140175
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1098140170}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0.029441833, y: 0.0736047}
+  m_Size: {x: 0.8061981, y: 1.453917}
+  m_Direction: 0
 --- !u!1 &1151579033
 GameObject:
   m_ObjectHideFlags: 0
@@ -2143,9 +2291,13 @@ MonoBehaviour:
   speed: 5
   jumpForce: 50
   rotationAngle: 180
+  attackKey: 106
+  weaponTag: Weapon
   floorTag: Floor
   idleAnimation: isIdle
   movementAnimation: movement
+  attackAnimation: isAttacking
+  haveWeapon: 0
 --- !u!1 &1668924645
 GameObject:
   m_ObjectHideFlags: 0
@@ -2336,6 +2488,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1908756838}
   - component: {fileID: 1908756839}
+  - component: {fileID: 1908756840}
   m_Layer: 0
   m_Name: Vision
   m_TagString: MonsterVision
@@ -2392,7 +2545,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -1.7149868, y: 0.28288448}
+  m_Offset: {x: -3.9158726, y: 0.28288448}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -2402,8 +2555,25 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 5.4907875, y: 2.27298}
+  m_Size: {x: 9.892559, y: 2.27298}
   m_EdgeRadius: 0
+--- !u!114 &1908756840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1908756837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b818a27acbab3b14cb5326e443fa8772, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  monsterObject: {fileID: 2326426}
+  patrolPoint1: {fileID: 135233430}
+  patrolPoint2: {fileID: 1074330662}
+  patrolSpeed: 2
+  destroyTriggerAfterActivation: 1
 --- !u!1 &1952220724
 GameObject:
   m_ObjectHideFlags: 0
@@ -2526,6 +2696,7 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 109704654}
   - {fileID: 1016463666}
   - {fileID: 9980908}
   - {fileID: 519420032}

@@ -44,6 +44,9 @@ public class Collectible2D : MonoBehaviour
          // Check if the other object has a Player Tag
         if (other.gameObject.CompareTag(playerTag)) {
             
+            UnityEngine.Debug.Log($"Collectible {gameObject.name} collected by {other.gameObject.name}");
+            other.gameObject.GetComponent<ButtHeadController>().haveWeapon = true;
+
             // Destroy the collectible
             Destroy(gameObject);
 

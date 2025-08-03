@@ -11,6 +11,7 @@ TagManager:
   - Floor
   - Monster
   - MonsterVision
+  - Weapon
   layers:
   - Default
   - TransparentFX
