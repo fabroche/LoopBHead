@@ -5,21 +5,44 @@ using UnityEngine;
 public class Collectible2D : MonoBehaviour
 {
 
-    public float rotationSpeed = 0.5f;
+    [Header("Tags")]
+    public string playerTag = "Player";
+
+    [Header("Collectible Settings")]
+    public float rotationSpeedX = 0;
+    public float rotationSpeedY = 0;
+    public float rotationSpeedZ = 0.5f;
     public GameObject onCollectEffect;
 
-    // Update is called once per frame
+    [Header("Floating Animation")]
+    public bool isFloating = true;
+    public float floatHeight = 0.5f;
+    public float floatSpeed = 2f;
+
+    private Vector3 startPosition;
+
+    void Start()
+    {
+        if (isFloating)
+        {
+            SetFloatingAnimation();
+        }
+    }
+
     void Update()
     {
+        transform.Rotate(rotationSpeedX, rotationSpeedY, rotationSpeedZ);
 
-        transform.Rotate(0, 0, rotationSpeed);
-        
+        if (isFloating)
+        {
+            FloatingUpdate();
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other) {
         
-         // Check if the other object has a PlayerController2D component
-        if (other.GetComponent<PlayerController2D>() != null) {
+         // Check if the other object has a Player Tag
+        if (other.gameObject.CompareTag(playerTag)) {
             
             // Destroy the collectible
             Destroy(gameObject);
@@ -31,6 +54,17 @@ public class Collectible2D : MonoBehaviour
         
     }
 
+    void SetFloatingAnimation()
+    {
+        startPosition = transform.position;
+    }
+
+    void FloatingUpdate()
+    {
+        // Crear movimiento flotante usando seno
+        float newY = startPosition.y + Mathf.Sin(Time.time * floatSpeed) * floatHeight;
+        transform.position = new Vector3(startPosition.x, newY, startPosition.z);
+    }
 
 }
 

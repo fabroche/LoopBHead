@@ -9,6 +9,8 @@ TagManager:
   - CinemachineTarget
   - SceneFloor
   - Floor
+  - Monster
+  - MonsterVision
   layers:
   - Default
   - TransparentFX
