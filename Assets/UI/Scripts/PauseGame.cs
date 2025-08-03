@@ -2,15 +2,31 @@ using UnityEngine;
 
 public class PauseGame : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
+    public GameObject pauseMenu;
+
+    public bool isPaused = false;
+
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            TogglePause();
+        }
+    }
+
+    public void TogglePause()
+    {
+        isPaused = !isPaused;
+        if (isPaused)
+        {
+            Time.timeScale = 0f; // Pausar el juego
+            pauseMenu.SetActive(true); // Mostrar el menú de pausa
+        }
+        else
+        {
+            Time.timeScale = 1f; // Reanudar el juego
+            pauseMenu.SetActive(false); // Ocultar el menú de pausa
+        }
     }
 }
