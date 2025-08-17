@@ -11,7 +11,8 @@ public class ButtHeadController : MonoBehaviour
     public float rotationAngle = 120f; // Angle to rotate the player
 
     [Header("Attack Settings")]
-    [SerializeField] private KeyCode attackKey = KeyCode.J;
+    public KeyCode attackKey = KeyCode.J;
+    public KeyCode insteractionKey = KeyCode.E;
     [SerializeField] private string weaponTag = "Weapon";
 
     [Header("Animation")]

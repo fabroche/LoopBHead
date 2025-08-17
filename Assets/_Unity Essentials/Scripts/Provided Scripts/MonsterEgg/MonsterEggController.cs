@@ -1,75 +1,83 @@
 using System;
 using System.Diagnostics;
 using UnityEngine;
+using Debug = System.Diagnostics.Debug;
 
 /*
-Configuración paso a paso:
-1. Setup básico:
+Configuraciï¿½n paso a paso:
+1. Setup bï¿½sico:
 
 Crea un GameObject con Collider2D marcado como "Is Trigger"
-Añade el script InteractiveObjectRemover
+Aï¿½ade el script InteractiveObjectRemover
 Arrastra el objeto que quieres remover al campo "Object To Remove"
 
-2. Configuración de efectos:
-Para efecto de partículas personalizado:
+2. Configuraciï¿½n de efectos:
+Para efecto de partï¿½culas personalizado:
 
 Crea un prefab con ParticleSystem
-Arrástralo al campo "Effect Prefab"
+Arrï¿½stralo al campo "Effect Prefab"
 
 Para efecto de sonido:
 
 Arrastra un AudioClip al campo "Sound Effect"
 Marca "Create Sound Effect"
 
-3. Configuración de UI (opcional):
+3. Configuraciï¿½n de UI (opcional):
 
 Crea un UI Text que diga "Presiona E"
-Arrástralo al campo "Prompt UI"
+Arrï¿½stralo al campo "Prompt UI"
 
 4. Funcionamiento:
 
 Jugador entra en el collider - Se muestra prompt
 Presiona E - Se ejecuta RemoveObjectWithEffect()
-Se guarda la posición del objeto antes de destruirlo
-Se crean efectos en esa posición
+Se guarda la posiciï¿½n del objeto antes de destruirlo
+Se crean efectos en esa posiciï¿½n
 Se destruye el objeto
 
-5. Características incluidas:
+5. Caracterï¿½sticas incluidas:
 
-Detección automática del jugador
+Detecciï¿½n automï¿½tica del jugador
 Prompt visual opcional
-Efectos de partículas (prefab o simple)
+Efectos de partï¿½culas (prefab o simple)
 Efectos de sonido
 Debug visual en el editor
-Métodos públicos para control externo
+Mï¿½todos pï¿½blicos para control externo
  */
 
 public class InteractiveObjectRemover : MonoBehaviour
 {
+    [Header("Object to Remove")] [SerializeField, Tooltip("Drag the object you want to remove in the Future here")]
+    private GameObject objectToRemoveFuture; // Future Object (Monster)
 
-    [Header("Object to Remove")]
-    [SerializeField] private GameObject objectToRemove; // Arrastra aquí el objeto que quieres remover
-    [SerializeField] private GameObject objectToRemove2; // Arrastra aquí el objeto que quieres remover
+    [SerializeField, Tooltip("Drag the object you want to remove in the Past here")]
+    private GameObject objectToRemovePast; // Past Object (Egg)
 
-    [Header("Interaction Settings")]
-    [SerializeField] private KeyCode interactionKey = KeyCode.E;
+    [Header("Interaction Settings")] private KeyCode attackKey = KeyCode.J;
+    private KeyCode interactionKey = KeyCode.E;
     [SerializeField] private string playerTag = "Player";
 
-    [Header("Effect Settings")]
-    [SerializeField] private GameObject effectPrefab; // Prefab del efecto (opcional)
+    [Header("Effect Settings")] [SerializeField]
+    private GameObject effectPrefab; // Prefab del efecto (opcional)
+
     [SerializeField] private bool createParticleEffect = true;
     [SerializeField] private bool createSoundEffect = true;
     [SerializeField] private AudioClip soundEffect;
 
-    [Header("Visual Feedback")]
-    [SerializeField] private bool showInteractionPrompt = true;
+    [Header("Visual Feedback")] [SerializeField]
+    private bool showInteractionPrompt = true;
+
     [SerializeField] private GameObject promptUI; // UI que muestra "Presiona E"
 
-    [Header("Debug")]
-    [SerializeField] private bool playerInRange = false;
+    [Header("Debug")] [SerializeField] private bool playerInRange = false;
+    
+    [Header("Main Character Position")] [SerializeField]
+    private Transform mainCharacterPosition;
 
     private AudioSource audioSource;
     private bool playerHaveWeapon = false;
+    private bool playerIsCarryingTheEgg = false;
+    
 
     void Start()
     {
@@ -83,7 +91,7 @@ public class InteractiveObjectRemover : MonoBehaviour
         }
 
         // Verificar que tenemos objeto para remover
-        if (objectToRemove == null)
+        if (objectToRemoveFuture == null)
         {
             UnityEngine.Debug.LogWarning($"{gameObject.name}: No se ha asignado objeto para remover!");
         }
@@ -91,29 +99,52 @@ public class InteractiveObjectRemover : MonoBehaviour
 
     void Update()
     {
-        // Solo verificar input si el jugador está en rango
-        if (playerInRange && playerHaveWeapon && Input.GetKeyDown(interactionKey))
+        
+        if (playerIsCarryingTheEgg)
+        {
+            objectToRemovePast.transform.position = mainCharacterPosition.position + Vector3.up * 1.2f;
+        }
+        
+        // Solo verificar input si el jugador estï¿½ en rango
+        if (playerInRange && playerHaveWeapon && Input.GetKeyDown(attackKey))
         {
             RemoveObjectWithEffect();
+        }
+
+        if (playerInRange && Input.GetKeyDown(interactionKey))
+        {
+            if (playerIsCarryingTheEgg)
+            {
+                DropEgg();
+            }
+            else
+            {
+                PickUpEgg();
+            }
         }
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        ButtHeadController playerController = other.gameObject.GetComponent<ButtHeadController>();
+
+        attackKey = playerController.attackKey;
+        interactionKey = playerController.insteractionKey;
+
         if (other.CompareTag(playerTag))
         {
             // Verificar si el jugador tiene el arma
-            playerHaveWeapon = other.gameObject.GetComponent<ButtHeadController>().haveWeapon;
+            playerHaveWeapon = playerController.haveWeapon;
 
             playerInRange = true;
 
-            // Mostrar prompt de interacción
+            // Mostrar prompt de interacciï¿½n
             if (promptUI != null)
             {
                 promptUI.SetActive(true);
             }
 
-            UnityEngine.Debug.Log($"Jugador en rango. Presiona {interactionKey} para interactuar");
+            UnityEngine.Debug.Log($"Jugador en rango. Presiona {attackKey} para interactuar");
         }
     }
 
@@ -123,57 +154,70 @@ public class InteractiveObjectRemover : MonoBehaviour
         {
             playerInRange = false;
 
-            // Ocultar prompt de interacción
+            // Ocultar prompt de interacciï¿½n
             if (promptUI != null)
             {
                 promptUI.SetActive(false);
             }
 
-            UnityEngine.Debug.Log("Jugador salió del rango");
+            UnityEngine.Debug.Log("Jugador saliï¿½ del rango");
         }
     }
 
     void RemoveObjectWithEffect()
     {
-        if (objectToRemove == null && objectToRemove2 == null)
+        if (objectToRemoveFuture == null && objectToRemovePast == null)
         {
             UnityEngine.Debug.LogWarning("No hay objeto para remover!");
             return;
         }
 
-        // Guardar posición antes de remover
-        Vector3 effectPosition = objectToRemove.transform.position;
-        Vector3 effectPosition2 = objectToRemove2.transform.position;
+        // Guardar posiciï¿½n antes de remover
+        Vector3 effectPosition = objectToRemoveFuture.transform.position;
+        Vector3 effectPosition2 = objectToRemovePast.transform.position;
 
-        UnityEngine.Debug.Log($"Removiendo objeto: {objectToRemove.name}");
-        UnityEngine.Debug.Log($"Removiendo objeto: {objectToRemove2.name}");
+        UnityEngine.Debug.Log($"Removiendo objeto: {objectToRemoveFuture.name}");
+        UnityEngine.Debug.Log($"Removiendo objeto: {objectToRemovePast.name}");
 
-        // Crear efectos en la posición del objeto
+        // Crear efectos en la posiciï¿½n del objeto
         CreateEffects(effectPosition);
         CreateEffects(effectPosition2);
 
         // Remover el objeto
-        Destroy(objectToRemove);
-        Destroy(objectToRemove2);
+        Destroy(objectToRemoveFuture);
+        Destroy(objectToRemovePast);
 
-        // Opcional: También remover este collider después de usar
+        // Opcional: Tambiï¿½n remover este collider despuï¿½s de usar
         Destroy(gameObject, 0.5f);
     }
 
+    void PickUpEgg()
+    {
+        playerIsCarryingTheEgg = true;
+        // objectToRemovePast.transform.localPosition = new Vector3(objectToRemovePast.transform.localPosition.x, objectToRemovePast.transform.position.y + 5f, 0);
+    }
+
+    void DropEgg()
+    {
+        playerIsCarryingTheEgg = false;
+        Vector3 dropPosition = mainCharacterPosition.rotation.y >= 0 ? Vector3.right : Vector3.left;
+        objectToRemovePast.transform.position = mainCharacterPosition.position + Vector3.down * 0.2f + dropPosition * 1.1f;
+        
+    }
     void CreateEffects(Vector3 position)
     {
-        // 1. Efecto de partículas personalizado
+        // 1. Efecto de partï¿½culas personalizado
         if (effectPrefab != null)
         {
             GameObject effect = Instantiate(effectPrefab, position, Quaternion.identity);
 
-            // Auto-destruir el efecto después de un tiempo
+            // Auto-destruir el efecto despuï¿½s de un tiempo
             Destroy(effect, 3f);
 
-            UnityEngine.Debug.Log("Efecto de partículas creado");
+            UnityEngine.Debug.Log("Efecto de partï¿½culas creado");
         }
 
-        // 2. Efecto de partículas simple (si no tienes prefab)
+        // 2. Efecto de partï¿½culas simple (si no tienes prefab)
         if (createParticleEffect && effectPrefab == null)
         {
             CreateSimpleParticleEffect(position);
@@ -195,7 +239,7 @@ public class InteractiveObjectRemover : MonoBehaviour
                 tempSource.clip = soundEffect;
                 tempSource.Play();
 
-                // Destruir después de que termine el sonido
+                // Destruir despuï¿½s de que termine el sonido
                 Destroy(tempAudio, soundEffect.length);
             }
 
@@ -212,38 +256,40 @@ public class InteractiveObjectRemover : MonoBehaviour
             particle.transform.position = position;
             particle.transform.localScale = Vector3.one * 0.1f;
 
-            // Añadir color
+            // Aï¿½adir color
             Renderer renderer = particle.GetComponent<Renderer>();
-            renderer.material.color = new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value);
+            renderer.material.color =
+                new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value);
 
-            // Añadir movimiento
+            // Aï¿½adir movimiento
             Rigidbody2D rb = particle.AddComponent<Rigidbody2D>();
-            Vector2 randomDirection = new Vector2(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f)).normalized;
+            Vector2 randomDirection = new Vector2(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f))
+                .normalized;
             rb.AddForce(randomDirection * UnityEngine.Random.Range(100f, 300f));
 
             // Auto-destruir
             Destroy(particle, UnityEngine.Random.Range(1f, 2f));
         }
 
-        UnityEngine.Debug.Log("Efecto de partículas simple creado");
+        UnityEngine.Debug.Log("Efecto de partï¿½culas simple creado");
     }
 
-    // Método público para llamar desde otros scripts
+    // Mï¿½todo pï¿½blico para llamar desde otros scripts
     public void ForceRemoveObject()
     {
         RemoveObjectWithEffect();
     }
 
-    // Método para cambiar el objeto a remover desde código
+    // Mï¿½todo para cambiar el objeto a remover desde cï¿½digo
     public void SetObjectToRemove(GameObject newObject)
     {
-        objectToRemove = newObject;
+        objectToRemoveFuture = newObject;
     }
 
-    // Visualización en editor
+    // Visualizaciï¿½n en editor
     void OnDrawGizmosSelected()
     {
-        // Mostrar área de interacción
+        // Mostrar ï¿½rea de interacciï¿½n
         Gizmos.color = Color.green;
         Collider2D col = GetComponent<Collider2D>();
         if (col != null)
@@ -251,12 +297,12 @@ public class InteractiveObjectRemover : MonoBehaviour
             Gizmos.DrawWireCube(transform.position, col.bounds.size);
         }
 
-        // Mostrar línea hacia el objeto a remover
-        if (objectToRemove != null)
+        // Mostrar lï¿½nea hacia el objeto a remover
+        if (objectToRemoveFuture != null)
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawLine(transform.position, objectToRemove.transform.position);
-            Gizmos.DrawWireSphere(objectToRemove.transform.position, 0.5f);
+            Gizmos.DrawLine(transform.position, objectToRemoveFuture.transform.position);
+            Gizmos.DrawWireSphere(objectToRemoveFuture.transform.position, 0.5f);
         }
     }
 }
