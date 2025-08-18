@@ -4,18 +4,14 @@ using UnityEngine;
 
 public class Collectible2D : MonoBehaviour
 {
+    [Header("Tags")] public string playerTag = "Player";
 
-    [Header("Tags")]
-    public string playerTag = "Player";
-
-    [Header("Collectible Settings")]
-    public float rotationSpeedX = 0;
+    [Header("Collectible Settings")] public float rotationSpeedX = 0;
     public float rotationSpeedY = 0;
     public float rotationSpeedZ = 0.5f;
     public GameObject onCollectEffect;
 
-    [Header("Floating Animation")]
-    public bool isFloating = true;
+    [Header("Floating Animation")] public bool isFloating = true;
     public float floatHeight = 0.5f;
     public float floatSpeed = 2f;
 
@@ -39,13 +35,25 @@ public class Collectible2D : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D other) {
+    private void OnTriggerEnter2D(Collider2D other)
+    {
         
-         // Check if the other object has a Player Tag
-        if (other.gameObject.CompareTag(playerTag)) {
+        // Check if the other object has a Player Tag
+        if (other.gameObject.CompareTag(playerTag))
+        {
+            ButtHeadController playerController = other.gameObject.GetComponent<ButtHeadController>();
             
             UnityEngine.Debug.Log($"Collectible {gameObject.name} collected by {other.gameObject.name}");
-            other.gameObject.GetComponent<ButtHeadController>().haveWeapon = true;
+
+            if (gameObject.CompareTag("Weapon"))
+            {
+                playerController.haveWeapon = true;
+            }
+
+            if (gameObject.CompareTag("Battery"))
+            {
+                playerController.haveBattery = true;
+            }
 
             // Destroy the collectible
             Destroy(gameObject);
@@ -53,8 +61,6 @@ public class Collectible2D : MonoBehaviour
             // Instantiate the particle effect
             Instantiate(onCollectEffect, transform.position, transform.rotation);
         }
-
-        
     }
 
     void SetFloatingAnimation()
@@ -68,7 +74,4 @@ public class Collectible2D : MonoBehaviour
         float newY = startPosition.y + Mathf.Sin(Time.time * floatSpeed) * floatHeight;
         transform.position = new Vector3(startPosition.x, newY, startPosition.z);
     }
-
 }
-
-

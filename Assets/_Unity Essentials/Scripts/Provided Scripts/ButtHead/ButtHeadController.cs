@@ -3,30 +3,31 @@ using UnityEngine;
 
 public class ButtHeadController : MonoBehaviour
 {
-    [Header("Movement")]
-    public float speed = 2.5f;
+    [Header("Movement")] public float speed = 2.5f;
     public float jumpForce = 3f;
 
-    [Header("Rotation")]
-    public float rotationAngle = 120f; // Angle to rotate the player
+    [Header("Rotation")] public float rotationAngle = 120f; // Angle to rotate the player
 
-    [Header("Attack Settings")]
-    public KeyCode attackKey = KeyCode.J;
+    [Header("Attack Settings")] public KeyCode attackKey = KeyCode.J;
     public KeyCode insteractionKey = KeyCode.E;
     [SerializeField] private string weaponTag = "Weapon";
 
-    [Header("Animation")]
-    public string floorTag = "Floor";
+    [Header("Animation")] public string floorTag = "Floor";
     public string idleAnimation = "isIdle";
     public string movementAnimation = "movement";
     public string attackAnimation = "isAttacking";
+
+    [Header("Enemy Tag")] public string enemyTag = "Monster";
+    public bool haveWeapon = false;
+    public bool haveBattery = false;
 
     private Rigidbody2D rb;
     private Animator playerAnimator;
     private bool canMoveRight = true;
     private bool canMoveLeft = true;
     private bool isGrounded = true;
-    public bool haveWeapon = false;
+    private float lifePoints = 1f;
+
 
     void Start()
     {
@@ -39,6 +40,10 @@ public class ButtHeadController : MonoBehaviour
 
     void Update()
     {
+        HandleIsAlive();
+        
+        HandleWinStage();
+        
         SetAttackAnimation(haveWeapon && Input.GetKey(attackKey));
 
         SetIdleAnimation(Input.GetAxisRaw("Horizontal") == 0);
@@ -81,7 +86,7 @@ public class ButtHeadController : MonoBehaviour
         {
             return; // Prevent jumping if not grounded
         }
-       
+
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
 
         isGrounded = false;
@@ -96,12 +101,16 @@ public class ButtHeadController : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-
+        if (collision.gameObject.CompareTag(enemyTag))
+        {
+            lifePoints -= 1f;
+        }
+        
         if (collision.gameObject.CompareTag(weaponTag))
         {
             UnityEngine.Debug.Log($"Weapon collected {collision.gameObject}");
             haveWeapon = true;
-            playerAnimator.SetBool("haveWeapon", true);    
+            playerAnimator.SetBool("haveWeapon", true);
         }
 
         if (collision.gameObject.CompareTag(floorTag))
@@ -126,8 +135,8 @@ public class ButtHeadController : MonoBehaviour
 
     void SetEnableAttack(bool isAttackEnabled)
     {
-            haveWeapon = isAttackEnabled;
-            playerAnimator.SetBool("haveWeapon", isAttackEnabled);
+        haveWeapon = isAttackEnabled;
+        playerAnimator.SetBool("haveWeapon", isAttackEnabled);
     }
 
     void OnCollisionExit2D(Collision2D collision)
@@ -182,6 +191,16 @@ public class ButtHeadController : MonoBehaviour
         bool isFreeFalling = rb.linearVelocity.y < -0.5f;
         // playerAnimator.SetBool("FreeFall", isFreeFalling);
     }
+    private void HandleIsAlive()
+    {
+        if (lifePoints <= 0)
+        {
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.GameOver();
+            }
+        }
+    }
 
     void SetAttackAnimation(bool isAttacking)
     {
@@ -190,8 +209,17 @@ public class ButtHeadController : MonoBehaviour
 
     void SetJumpAnimation()
     {
-    //    playerAnimator.SetBool("Grounded", false);
-      //  playerAnimator.SetTrigger("Jump");
+        //    playerAnimator.SetBool("Grounded", false);
+        //  playerAnimator.SetTrigger("Jump");
     }
-
+    
+    private void HandleWinStage()
+    {
+        if (!haveBattery) return;
+        
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.YouWin();
+        }
+    }
 }

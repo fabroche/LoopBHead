@@ -12,6 +12,7 @@ TagManager:
   - Monster
   - MonsterVision
   - Weapon
+  - Battery
   layers:
   - Default
   - TransparentFX
