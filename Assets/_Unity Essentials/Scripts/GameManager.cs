@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     [Header("Buttons")] public Button restartButton;
     public Button menuButton;
     public Button nextLevelButton;
+    public Button quitButton;
 
     public KeyCode pauseKey = KeyCode.Escape;
     public KeyCode restartKey = KeyCode.R;
