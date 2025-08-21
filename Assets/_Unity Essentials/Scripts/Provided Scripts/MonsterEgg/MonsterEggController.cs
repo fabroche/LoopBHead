@@ -77,6 +77,7 @@ public class InteractiveObjectRemover : MonoBehaviour
     private AudioSource audioSource;
     private bool playerHaveWeapon = false;
     private bool playerIsCarryingTheEgg = false;
+    private ButtHeadController _playerScript;
     
 
     void Start()
@@ -126,15 +127,15 @@ public class InteractiveObjectRemover : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        ButtHeadController playerController = other.gameObject.GetComponent<ButtHeadController>();
+        _playerScript = other.gameObject.GetComponent<ButtHeadController>();
 
-        attackKey = playerController.attackKey;
-        interactionKey = playerController.insteractionKey;
+        attackKey = _playerScript.attackKey;
+        interactionKey = _playerScript.insteractionKey;
 
         if (other.CompareTag(playerTag))
         {
             // Verificar si el jugador tiene el arma
-            playerHaveWeapon = playerController.haveWeapon;
+            playerHaveWeapon = _playerScript.haveWeapon;
 
             playerInRange = true;
 
@@ -194,12 +195,15 @@ public class InteractiveObjectRemover : MonoBehaviour
     void PickUpEgg()
     {
         playerIsCarryingTheEgg = true;
+        _playerScript.isCarryingMonsterEgg = playerIsCarryingTheEgg;
         // objectToRemovePast.transform.localPosition = new Vector3(objectToRemovePast.transform.localPosition.x, objectToRemovePast.transform.position.y + 5f, 0);
     }
 
     void DropEgg()
     {
         playerIsCarryingTheEgg = false;
+        _playerScript.isCarryingMonsterEgg = playerIsCarryingTheEgg;
+        
         Vector3 dropPosition = mainCharacterPosition.rotation.y >= 0 ? Vector3.right : Vector3.left;
         objectToRemovePast.transform.position = mainCharacterPosition.position + Vector3.down * 0.2f + dropPosition * 1.1f;
         
