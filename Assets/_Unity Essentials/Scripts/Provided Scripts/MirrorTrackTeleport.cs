@@ -24,26 +24,28 @@ public class MirrorTrackTeleport : MonoBehaviour
     }
 
     private Rigidbody2D rb;
+    private ButtHeadController _playerScript;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-
-        // Verificar que todas las referencias estén asignadas
+        _playerScript = GetComponent<ButtHeadController>();
+        
+        // Verificar que todas las referencias estï¿½n asignadas
         if (trackA_Start == null || trackA_End == null || trackB_Start == null || trackB_End == null)
         {
-            UnityEngine.Debug.LogError("¡Faltan referencias de las pistas! Asigna todos los puntos de inicio y final.");
+            UnityEngine.Debug.LogError("ï¿½Faltan referencias de las pistas! Asigna todos los puntos de inicio y final.");
         }
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(teleportKey))
+        if (!_playerScript.isCarryingMonsterEgg &&Input.GetKeyDown(teleportKey))
         {
             TeleportToMirrorTrack();
         }
 
-        // Auto-detectar en qué pista está el jugador
+        // Auto-detectar en quï¿½ pista estï¿½ el jugador
         if (showDebugInfo)
         {
             DetectCurrentTrack();
@@ -59,7 +61,7 @@ public class MirrorTrackTeleport : MonoBehaviour
 
         if (currentTrack == TrackType.TrackA)
         {
-            // Calcular posición equivalente en pista B
+            // Calcular posiciï¿½n equivalente en pista B
             mirrorPosition = CalculateMirrorPosition(
                 currentPosition,
                 trackA_Start.position,
@@ -71,7 +73,7 @@ public class MirrorTrackTeleport : MonoBehaviour
         }
         else
         {
-            // Calcular posición equivalente en pista A
+            // Calcular posiciï¿½n equivalente en pista A
             mirrorPosition = CalculateMirrorPosition(
                 currentPosition,
                 trackB_Start.position,
@@ -87,7 +89,7 @@ public class MirrorTrackTeleport : MonoBehaviour
 
         if (showDebugInfo)
         {
-            UnityEngine.Debug.Log($"Teletransportado de {(currentTrack == TrackType.TrackB ? "A" : "B")} a {currentTrack} - Posición: {mirrorPosition}");
+            UnityEngine.Debug.Log($"Teletransportado de {(currentTrack == TrackType.TrackB ? "A" : "B")} a {currentTrack} - Posiciï¿½n: {mirrorPosition}");
         }
     }
 
@@ -97,9 +99,9 @@ public class MirrorTrackTeleport : MonoBehaviour
         Vector3 trackVector = fromEnd - fromStart;
         Vector3 playerVector = currentPos - fromStart;
 
-        // Proyectar la posición del jugador sobre la línea de la pista
+        // Proyectar la posiciï¿½n del jugador sobre la lï¿½nea de la pista
         float trackLength = trackVector.magnitude;
-        if (trackLength == 0) return toStart; // Evitar división por cero
+        if (trackLength == 0) return toStart; // Evitar divisiï¿½n por cero
 
         Vector3 trackDirection = trackVector.normalized;
         float projectedDistance = Vector3.Dot(playerVector, trackDirection);
@@ -140,7 +142,7 @@ public class MirrorTrackTeleport : MonoBehaviour
         float distanceToTrackA = DistanceToLine(currentPos, trackA_Start.position, trackA_End.position);
         float distanceToTrackB = DistanceToLine(currentPos, trackB_Start.position, trackB_End.position);
 
-        // Determinar pista más cercana
+        // Determinar pista mï¿½s cercana
         currentTrack = (distanceToTrackA < distanceToTrackB) ? TrackType.TrackA : TrackType.TrackB;
     }
 
@@ -165,7 +167,7 @@ public class MirrorTrackTeleport : MonoBehaviour
         return trackA_Start != null && trackA_End != null && trackB_Start != null && trackB_End != null;
     }
 
-    // Métodos públicos para control externo
+    // Mï¿½todos pï¿½blicos para control externo
     public void SetCurrentTrack(TrackType track)
     {
         currentTrack = track;
@@ -179,7 +181,7 @@ public class MirrorTrackTeleport : MonoBehaviour
         }
     }
 
-    // Configurar pistas desde código
+    // Configurar pistas desde cï¿½digo
     public void SetupTracks(Transform aStart, Transform aEnd, Transform bStart, Transform bEnd)
     {
         trackA_Start = aStart;
@@ -188,7 +190,7 @@ public class MirrorTrackTeleport : MonoBehaviour
         trackB_End = bEnd;
     }
 
-    // Visualización en editor
+    // Visualizaciï¿½n en editor
     void OnDrawGizmosSelected()
     {
         if (!AreReferencesValid()) return;
@@ -205,11 +207,11 @@ public class MirrorTrackTeleport : MonoBehaviour
         Gizmos.DrawWireSphere(trackB_Start.position, 0.3f);
         Gizmos.DrawWireSphere(trackB_End.position, 0.3f);
 
-        // Dibujar jugador y su posición espejo
+        // Dibujar jugador y su posiciï¿½n espejo
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, 0.5f);
 
-        // Calcular y mostrar posición espejo
+        // Calcular y mostrar posiciï¿½n espejo
         Vector3 mirrorPos;
         if (currentTrack == TrackType.TrackA)
         {
