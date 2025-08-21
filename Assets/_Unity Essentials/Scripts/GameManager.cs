@@ -14,6 +14,8 @@ public class GameManager : MonoBehaviour
 
     [Header("You Win UI Elements")] public GameObject youWinPanel;
     public TextMeshProUGUI youWinText;
+    
+    [Header("Pause UI Elements")] public GameObject pausePanel;
 
     [Header("Buttons")] public Button restartButton;
     public Button menuButton;
@@ -42,6 +44,8 @@ public class GameManager : MonoBehaviour
         SetPanelVisibility(gameOverPanel, false);
 
         SetPanelVisibility(youWinPanel, false);
+        
+        SetPanelVisibility(pausePanel, false);
 
         AddButtonListener(restartButton, RestartScene);
 
@@ -52,6 +56,16 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        TogglePausePanel();
+    }
+
+    private void TogglePausePanel()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            SetPanelVisibility(pausePanel, !GetPanelVisibility(pausePanel));
+            Time.timeScale = GetPanelVisibility(pausePanel) ? Time.timeScale = 0f : Time.timeScale = 1f;
+        }
     }
 
     private void AddButtonListener(Button button, UnityAction function)
@@ -62,12 +76,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void SetPanelVisibility(GameObject panel, bool isActive)
+    public void SetPanelVisibility(GameObject panel, bool isActive)
     {
         if (panel != null)
         {
             panel.SetActive(isActive);
         }
+    }
+
+    public bool GetPanelVisibility(GameObject panel)
+    {
+        return panel.activeSelf;
     }
 
     private void GoToMenu()
