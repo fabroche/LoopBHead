@@ -64,8 +64,8 @@ public class InteractiveObjectRemover : MonoBehaviour
     [SerializeField] private bool createSoundEffect = true;
     [SerializeField] private AudioClip soundEffect;
 
-    [Header("Visual Feedback")] [SerializeField]
-    private bool showInteractionPrompt = true;
+    //[Header("Visual Feedback")] [SerializeField]
+    //private bool showInteractionPrompt = true;
 
     [SerializeField] private GameObject promptUI; // UI que muestra "Presiona E"
 
@@ -79,11 +79,17 @@ public class InteractiveObjectRemover : MonoBehaviour
     private bool playerIsCarryingTheEgg = false;
     private ButtHeadController _playerScript;
     
+    private Vector3 _pickUpPosition;
+    private Vector3 _dropPosition;
+    
 
     void Start()
     {
         // Obtener AudioSource si existe
         audioSource = GetComponent<AudioSource>();
+        
+        _pickUpPosition = Vector3.zero;
+        _dropPosition = Vector3.zero;
 
         // Ocultar prompt al inicio
         if (promptUI != null)
@@ -196,6 +202,7 @@ public class InteractiveObjectRemover : MonoBehaviour
     {
         playerIsCarryingTheEgg = true;
         _playerScript.isCarryingMonsterEgg = playerIsCarryingTheEgg;
+        _pickUpPosition = objectToRemovePast.transform.position;
         // objectToRemovePast.transform.localPosition = new Vector3(objectToRemovePast.transform.localPosition.x, objectToRemovePast.transform.position.y + 5f, 0);
     }
 
@@ -204,8 +211,16 @@ public class InteractiveObjectRemover : MonoBehaviour
         playerIsCarryingTheEgg = false;
         _playerScript.isCarryingMonsterEgg = playerIsCarryingTheEgg;
         
-        Vector3 dropPosition = mainCharacterPosition.rotation.y >= 0 ? Vector3.right : Vector3.left;
-        objectToRemovePast.transform.position = mainCharacterPosition.position + Vector3.down * 0.2f + dropPosition * 1.1f;
+        Vector3 dropDirection = mainCharacterPosition.rotation.y >= 0 ? Vector3.right : Vector3.left;
+        
+        Vector3 originalFuturePosition = objectToRemoveFuture.transform.position;
+        
+        _dropPosition = mainCharacterPosition.position + Vector3.down * 0.2f + dropDirection * 1.1f;
+
+        Vector3 displacement = _dropPosition - _pickUpPosition;
+
+        objectToRemovePast.transform.position = _dropPosition;
+        objectToRemoveFuture.transform.position = originalFuturePosition + displacement;
         
     }
     void CreateEffects(Vector3 position)
