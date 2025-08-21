@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using TMPro;
 using UnityEngine;
 
 public class ButtHeadController : MonoBehaviour
@@ -21,6 +22,10 @@ public class ButtHeadController : MonoBehaviour
     public bool haveWeapon = false;
     public bool haveBattery = false;
 
+    [Header("InteractionFlags")] public bool isCarryingMonsterEgg = false;
+    
+    [Header("UI")]
+    
     private Rigidbody2D rb;
     private Animator playerAnimator;
     private bool canMoveRight = true;
@@ -28,11 +33,15 @@ public class ButtHeadController : MonoBehaviour
     private bool isGrounded = true;
     private float lifePoints = 1f;
 
+    public GameObject timeJumpControlInfoUI;
+    private TextMeshPro _timeJumpControlInfoUIScript;
+
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        _timeJumpControlInfoUIScript = timeJumpControlInfoUI.GetComponent<TextMeshPro>();
         playerAnimator = GetComponent<Animator>();
 
         // SetInitialRotation();
@@ -50,6 +59,8 @@ public class ButtHeadController : MonoBehaviour
 
         playerAnimator.SetFloat(movementAnimation, Input.GetAxisRaw("Horizontal"));
 
+        // HandleControlInfoUIStatus(!isCarryingMonsterEgg);
+
         if (Input.GetAxisRaw("Horizontal") > 0 && canMoveRight)
         {
             Move();
@@ -63,6 +74,19 @@ public class ButtHeadController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Jump();
+        }
+    }
+
+    private void HandleControlInfoUIStatus(bool isHableToUse)
+    {
+        
+        if (isHableToUse && timeJumpControlInfoUI.GetComponent<UIControlInfoController>().actionName == "Time Jump")
+        {
+            _timeJumpControlInfoUIScript.color = Color.red;
+        }
+        else
+        {
+            _timeJumpControlInfoUIScript.color = Color.white;
         }
     }
 
@@ -130,6 +154,13 @@ public class ButtHeadController : MonoBehaviour
                     canMoveLeft = false;
                 }
             }
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Abyss")) {
+            lifePoints -= 1f;
         }
     }
 
