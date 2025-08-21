@@ -12,7 +12,7 @@ public class TeleportOnKey : MonoBehaviour
 
     [Header("Effects")]
     [SerializeField] private bool showTeleportMessage = true;
-    [SerializeField] private string teleportMessage = "¡Teletransportado!";
+    [SerializeField] private string teleportMessage = "ï¿½Teletransportado!";
 
     private Rigidbody2D rb;
 
@@ -39,7 +39,7 @@ public class TeleportOnKey : MonoBehaviour
             rb.linearVelocity = Vector2.zero;
         }
 
-        // Determinar posición final
+        // Determinar posiciï¿½n final
         Vector3 finalPosition;
         if (destinationObject != null)
         {
@@ -48,7 +48,7 @@ public class TeleportOnKey : MonoBehaviour
         }
         else
         {
-            // Usar posición manual
+            // Usar posiciï¿½n manual
             finalPosition = teleportPosition;
         }
 
@@ -58,35 +58,35 @@ public class TeleportOnKey : MonoBehaviour
         // Mostrar mensaje
         if (showTeleportMessage)
         {
-            string destination = destinationObject != null ? destinationObject.name : "posición fija";
+            string destination = destinationObject != null ? destinationObject.name : "posiciï¿½n fija";
             UnityEngine.Debug.Log($"{teleportMessage} - Destino: {destination}");
         }
     }
 
-    // Método público para cambiar la posición de destino
+    // Mï¿½todo pï¿½blico para cambiar la posiciï¿½n de destino
     public void SetTeleportPosition(Vector3 newPosition)
     {
         teleportPosition = newPosition;
         destinationObject = null; // Limpiar objeto destino
     }
 
-    // Método público para cambiar el objeto destino
+    // Mï¿½todo pï¿½blico para cambiar el objeto destino
     public void SetDestinationObject(Transform newDestination, Vector3 offset = default)
     {
         destinationObject = newDestination;
         destinationOffset = offset;
     }
 
-    // Método público para teletransportar desde código
+    // Mï¿½todo pï¿½blico para teletransportar desde cï¿½digo
     public void Teleport()
     {
         TeleportPlayer();
     }
 
-    // Visualización en editor
+    // Visualizaciï¿½n en editor
     void OnDrawGizmosSelected()
     {
-        // Dibujar posición actual
+        // Dibujar posiciï¿½n actual
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, 0.5f);
 
@@ -101,7 +101,7 @@ public class TeleportOnKey : MonoBehaviour
             finalDestination = teleportPosition;
         }
 
-        // Dibujar línea al destino
+        // Dibujar lï¿½nea al destino
         Gizmos.color = Color.yellow;
         Gizmos.DrawLine(transform.position, finalDestination);
 
