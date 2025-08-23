@@ -32,8 +32,7 @@ public class ButtHeadController : MonoBehaviour
     private bool canMoveLeft = true;
     private bool isGrounded = true;
     private float lifePoints = 1f;
-
-    public GameObject timeJumpControlInfoUI;
+    
     private TextMeshPro _timeJumpControlInfoUIScript;
 
 
@@ -41,7 +40,6 @@ public class ButtHeadController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         rb.constraints = RigidbodyConstraints2D.FreezeRotation;
-        _timeJumpControlInfoUIScript = timeJumpControlInfoUI.GetComponent<TextMeshPro>();
         playerAnimator = GetComponent<Animator>();
 
         // SetInitialRotation();
@@ -59,7 +57,7 @@ public class ButtHeadController : MonoBehaviour
 
         playerAnimator.SetFloat(movementAnimation, Input.GetAxisRaw("Horizontal"));
 
-        // HandleControlInfoUIStatus(!isCarryingMonsterEgg);
+        HandleControlInfoUIStatus(!isCarryingMonsterEgg);
 
         if (Input.GetAxisRaw("Horizontal") > 0 && canMoveRight)
         {
@@ -79,7 +77,9 @@ public class ButtHeadController : MonoBehaviour
 
     private void HandleControlInfoUIStatus(bool isHableToUse)
     {
+        GameManager.Instance.SetPanelVisibility(GameManager.Instance.timeJumpControlInfoPanel, isHableToUse);
         
+        /*
         if (isHableToUse && timeJumpControlInfoUI.GetComponent<UIControlInfoController>().actionName == "Time Jump")
         {
             _timeJumpControlInfoUIScript.color = Color.red;
@@ -88,6 +88,7 @@ public class ButtHeadController : MonoBehaviour
         {
             _timeJumpControlInfoUIScript.color = Color.white;
         }
+        */
     }
 
     void FixedUpdate()
