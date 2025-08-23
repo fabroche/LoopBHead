@@ -16,6 +16,8 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI youWinText;
     
     [Header("Pause UI Elements")] public GameObject pausePanel;
+    
+    [Header("Control Info UI Elements")] public GameObject timeJumpControlInfoPanel;
 
     [Header("Buttons")] public Button restartButton;
     public Button menuButton;
