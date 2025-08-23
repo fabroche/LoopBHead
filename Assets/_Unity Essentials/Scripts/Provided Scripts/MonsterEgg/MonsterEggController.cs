@@ -67,7 +67,7 @@ public class InteractiveObjectRemover : MonoBehaviour
     //[Header("Visual Feedback")] [SerializeField]
     //private bool showInteractionPrompt = true;
 
-    [SerializeField] private GameObject promptUI; // UI que muestra "Presiona E"
+    // [SerializeField] private GameObject promptUI; // UI que muestra "Presiona E"
 
     [Header("Debug")] [SerializeField] private bool playerInRange = false;
     
@@ -82,6 +82,8 @@ public class InteractiveObjectRemover : MonoBehaviour
     private Vector3 _pickUpPosition;
     private Vector3 _dropPosition;
     
+    private int _eggLifePoints = 1;
+    
 
     void Start()
     {
@@ -92,11 +94,13 @@ public class InteractiveObjectRemover : MonoBehaviour
         _dropPosition = Vector3.zero;
 
         // Ocultar prompt al inicio
+       /*
         if (promptUI != null)
         {
             promptUI.SetActive(false);
         }
-
+        */
+       
         // Verificar que tenemos objeto para remover
         if (objectToRemoveFuture == null)
         {
@@ -112,7 +116,12 @@ public class InteractiveObjectRemover : MonoBehaviour
             objectToRemovePast.transform.position = mainCharacterPosition.position + Vector3.up * 1.2f;
         }
         
-        // Solo verificar input si el jugador est� en rango
+        if (_eggLifePoints <= 0)
+        {
+            RemoveObjectWithEffect();
+        }
+        
+        // Solo verificar input si el jugador este en rango
         if (playerInRange && playerHaveWeapon && Input.GetKeyDown(attackKey))
         {
             RemoveObjectWithEffect();
@@ -133,25 +142,29 @@ public class InteractiveObjectRemover : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        _playerScript = other.gameObject.GetComponent<ButtHeadController>();
-
-        attackKey = _playerScript.attackKey;
-        interactionKey = _playerScript.insteractionKey;
-
         if (other.CompareTag(playerTag))
         {
+            _playerScript = other.gameObject.GetComponent<ButtHeadController>();
+
+            attackKey = _playerScript.attackKey;
             // Verificar si el jugador tiene el arma
             playerHaveWeapon = _playerScript.haveWeapon;
 
             playerInRange = true;
 
-            // Mostrar prompt de interacci�n
-            if (promptUI != null)
+        // Mostrar prompt de interacci�n
+        /*    if (promptUI != null)
             {
                 promptUI.SetActive(true);
-            }
+            } 
+        */
 
             UnityEngine.Debug.Log($"Jugador en rango. Presiona {attackKey} para interactuar");
+        }
+
+        if (other.CompareTag("Abyss"))
+        {
+            _eggLifePoints -= 1;
         }
     }
 
@@ -162,11 +175,13 @@ public class InteractiveObjectRemover : MonoBehaviour
             playerInRange = false;
 
             // Ocultar prompt de interacci�n
+            /*
             if (promptUI != null)
             {
                 promptUI.SetActive(false);
             }
-
+            */
+            
             UnityEngine.Debug.Log("Jugador sali� del rango");
         }
     }
@@ -179,7 +194,7 @@ public class InteractiveObjectRemover : MonoBehaviour
             return;
         }
 
-        // Guardar posici�n antes de remover
+        // Guardar posicion antes de remover
         Vector3 effectPosition = objectToRemoveFuture.transform.position;
         Vector3 effectPosition2 = objectToRemovePast.transform.position;
 
@@ -194,7 +209,7 @@ public class InteractiveObjectRemover : MonoBehaviour
         Destroy(objectToRemoveFuture);
         Destroy(objectToRemovePast);
 
-        // Opcional: Tambi�n remover este collider despu�s de usar
+        // Opcional: Tambien remover este collider despu�s de usar
         Destroy(gameObject, 0.5f);
     }
 
@@ -225,7 +240,7 @@ public class InteractiveObjectRemover : MonoBehaviour
     }
     void CreateEffects(Vector3 position)
     {
-        // 1. Efecto de part�culas personalizado
+        // 1. Efecto de particulas personalizado
         if (effectPrefab != null)
         {
             GameObject effect = Instantiate(effectPrefab, position, Quaternion.identity);
@@ -236,7 +251,7 @@ public class InteractiveObjectRemover : MonoBehaviour
             UnityEngine.Debug.Log("Efecto de part�culas creado");
         }
 
-        // 2. Efecto de part�culas simple (si no tienes prefab)
+        // 2. Efecto de particulas simple (si no tienes prefab)
         if (createParticleEffect && effectPrefab == null)
         {
             CreateSimpleParticleEffect(position);
@@ -293,19 +308,19 @@ public class InteractiveObjectRemover : MonoBehaviour
         UnityEngine.Debug.Log("Efecto de part�culas simple creado");
     }
 
-    // M�todo p�blico para llamar desde otros scripts
+    // Metodo publico para llamar desde otros scripts
     public void ForceRemoveObject()
     {
         RemoveObjectWithEffect();
     }
 
-    // M�todo para cambiar el objeto a remover desde c�digo
+    // Metodo para cambiar el objeto a remover desde codigo
     public void SetObjectToRemove(GameObject newObject)
     {
         objectToRemoveFuture = newObject;
     }
 
-    // Visualizaci�n en editor
+    // Visualizacion en editor
     void OnDrawGizmosSelected()
     {
         // Mostrar �rea de interacci�n
@@ -316,12 +331,17 @@ public class InteractiveObjectRemover : MonoBehaviour
             Gizmos.DrawWireCube(transform.position, col.bounds.size);
         }
 
-        // Mostrar l�nea hacia el objeto a remover
+        // Mostrar linea hacia el objeto a remover
         if (objectToRemoveFuture != null)
         {
             Gizmos.color = Color.red;
             Gizmos.DrawLine(transform.position, objectToRemoveFuture.transform.position);
             Gizmos.DrawWireSphere(objectToRemoveFuture.transform.position, 0.5f);
         }
+    }
+
+    public void UpdateLifePoints(int lifePoints)
+    {
+        _eggLifePoints += lifePoints;
     }
 }
